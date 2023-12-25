@@ -1,3 +1,4 @@
+import random
 from random import choice, randint
 
 import pygame
@@ -34,23 +35,135 @@ clock = pygame.time.Clock()
 
 
 # Тут опишите все классы игры
-...
+class GameObject:
+    """This is a base class from which other game objects inherit.
+     It contains common attributes of game objects."""
+
+    def __init__(self):
+        self.position = (
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT // 2
+        )
+        self.body_color = None
+
+    def draw(self, surface):
+        """Draw object method."""
+        pass
+
+
+class Apple(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.body_color = (255, 0, 0)
+        self.randomize_position()
+
+    def randomize_position(self):
+        self.position = (
+            randint(0, GRID_WIDTH - 1) * GRID_SIZE,
+            randint(0, GRID_HEIGHT - 1) * GRID_SIZE
+        )
+
+    def draw(self, surface):
+        rect = pygame.Rect(
+            (self.position[0], self.position[1]),
+            (GRID_SIZE, GRID_SIZE)
+        )
+        pygame.draw.rect(surface, self.body_color, rect)
+        pygame.draw.rect(surface, (93, 216, 228), rect, 1)
+
+
+class Snake(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.length = 1
+        self.positions = [self.position]
+        self.direction = RIGHT
+        self.next_direction = None
+        self.body_color = (0, 255, 0)
+        self.last = 0
+
+    def update_direction(self):
+        if self.next_direction:
+            self.direction = self.next_direction
+            self.next_direction = None
+
+    def move(self):
+        x, y = self.get_head_position()
+        if self.direction == RIGHT:
+            x += GRID_SIZE
+            if x >= SCREEN_WIDTH:
+                x = 0
+        self.positions.insert(0, (x, y))
+        self.last = self.positions[-1]
+
+
+
+
+
+
+    def draw(self, surface):
+        for position in self.positions[:-1]:
+            rect = (
+                pygame.Rect((position[0], position[1]), (GRID_SIZE, GRID_SIZE))
+            )
+            pygame.draw.rect(surface, self.body_color, rect)
+            pygame.draw.rect(surface, (93, 216, 228), rect, 1)
+        #     # Затирание последнего сегмента
+            if self.last:
+                last_rect = pygame.Rect(
+                    (self.last[0], self.last[1]),
+                    (GRID_SIZE, GRID_SIZE)
+                )
+                pygame.draw.rect(surface, BOARD_BACKGROUND_COLOR, last_rect)
+            self.positions.pop()
+
+    def get_head_position(self):
+        return self.positions[0]
+
+    def reset(self):
+        self.length = 1
+        self.positions = self.position
+        self.direction = RIGHT
+        self.next_direction = None
+
+
+
+# Функция обработки действий пользователя
+def handle_keys(game_object):
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP and game_object.direction != DOWN:
+                game_object.next_direction = UP
+            elif event.key == pygame.K_DOWN and game_object.direction != UP:
+                game_object.next_direction = DOWN
+            elif event.key == pygame.K_LEFT and game_object.direction != RIGHT:
+                game_object.next_direction = LEFT
+            elif event.key == pygame.K_RIGHT and game_object.direction != LEFT:
+                game_object.next_direction = RIGHT
 
 
 def main():
     # Тут нужно создать экземпляры классов
-    ...
+    apple = Apple()
+    snake = Snake()
+    while True:
+        clock.tick(SPEED)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+        apple.draw(screen)
+        snake.draw(screen)
+        handle_keys(snake)
+        snake.update_direction()
+        snake.move()
+        pygame.display.flip()
 
-    # while True:
-        # clock.tick(SPEED)
-
-        # Тут опишите основную логику игры
-        # ...
 
 
 if __name__ == '__main__':
     main()
-
 
 # Метод draw класса Apple
 # def draw(self, surface):
