@@ -88,6 +88,7 @@ class Snake(GameObject):
             self.next_direction = None
 
     def move(self):
+        self.update_direction()
         x, y = self.get_head_position()
         if self.direction == RIGHT:
             x += GRID_SIZE
@@ -164,12 +165,13 @@ def main():
     apple = Apple()
     snake = Snake()
     while True:
-        clock.tick(SPEED)
+        clock.tick(SPEED - 10)
         apple.draw(screen)
         snake.draw(screen)
-        snake.update_direction()
         handle_keys(snake)
         snake.move()
+        if snake.positions[0] == apple.position:
+            apple.randomize_position()
         pygame.display.update()
 
 
