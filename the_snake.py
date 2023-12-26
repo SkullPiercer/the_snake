@@ -14,6 +14,7 @@ def main():
         snake.move()
         if snake.positions[0] == apple.position:
             apple.randomize_position()
+            snake.eat()
         pygame.display.update()
 
 

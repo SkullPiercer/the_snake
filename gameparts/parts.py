@@ -107,6 +107,18 @@ class Snake(GameObject):
         self.last = self.positions[-1]
         self.positions.pop()
 
+    def eat(self):
+        x, y = self.positions[-1]
+        self.length += 1
+        if self.direction == RIGHT:
+            self.positions.append((x - 20, y))
+        elif self.direction == UP:
+            self.positions.append((x, y + 20))
+        elif self.direction == DOWN:
+            self.positions.append((x, y - 20))
+        elif self.direction == LEFT:
+            self.positions.append((x + 20, y))
+
     # Метод draw класса Snake
     def draw(self, surface):
         for position in self.positions[:-1]:
