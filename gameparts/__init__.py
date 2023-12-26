@@ -1,1 +1,0 @@
-from .parts import Apple, Snake, screen, SPEED, handle_keys, clock, BOARD_BACKGROUND_COLOR

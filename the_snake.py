@@ -1,8 +1,3 @@
-# from gameparts import Apple, Snake, screen, SPEED, handle_keys, clock, BOARD_BACKGROUND_COLOR
-# Реализовал отдельный модуль с всемы вышеупомянутыми классами
-# но Pytest не пропускал такое решение и я перенес все обратно
-# из гита не удалял папки
-
 from random import choice, randint
 import pygame
 
