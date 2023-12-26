@@ -84,6 +84,11 @@ class Snake(GameObject):
             self.direction = self.next_direction
             self.next_direction = None
 
+    def game_over(self):
+        head = self.get_head_position()
+        if head in self.positions[1:]:
+            return True
+
     def move(self):
         self.update_direction()
         x, y = self.get_head_position()
@@ -147,7 +152,7 @@ class Snake(GameObject):
 
     def reset(self):
         self.length = 1
-        self.positions = self.position
+        self.positions = [self.position]
         self.direction = choice((UP, DOWN, RIGHT, LEFT))
         self.next_direction = RIGHT
 
