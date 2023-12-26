@@ -188,6 +188,7 @@ def handle_keys(game_object):
 
 
 def main():
+    """Основной игровой цикл."""
     apple = Apple()
     snake = Snake()
     while True:
