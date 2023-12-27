@@ -52,6 +52,11 @@ KEY_MAPPING = {
     (RIGHT, pygame.K_RIGHT): RIGHT,
 }
 
+# Максимально допустимые широта и высота
+MAX_HEIGHT = SCREEN_HEIGHT - GRID_SIZE
+MAX_WIDTH = SCREEN_WIDTH - GRID_SIZE
+
+
 class GameObject:
     """Родительский класс для описания объектов на игровом поле."""
 
@@ -122,15 +127,15 @@ class Snake(GameObject):
     def move(self):
         """Джение змейки."""
         self.update_direction()
-        first_pos, second_pos = self.get_head_position()
+        x, y = self.get_head_position()
         next_step = {
-            RIGHT: lambda x, y: (x + GRID_SIZE, y) if x <= SCREEN_WIDTH else (0, y),
-            UP: lambda x, y: (x, y - GRID_SIZE) if y >= 0 else (x, SCREEN_HEIGHT - GRID_SIZE),
-            DOWN: lambda x, y: (x, y + GRID_SIZE) if y <= SCREEN_HEIGHT else (x, 0),
-            LEFT: lambda x, y: (x - GRID_SIZE, y) if x > 0 else (SCREEN_WIDTH - GRID_SIZE, y)
+            RIGHT: (x + GRID_SIZE, y) if x <= SCREEN_WIDTH else (0, y),
+            UP: (x, y - GRID_SIZE) if y >= 0 else (x, MAX_HEIGHT),
+            DOWN: (x, y + GRID_SIZE) if y <= SCREEN_HEIGHT else (x, 0),
+            LEFT: (x - GRID_SIZE, y) if x > 0 else (MAX_WIDTH, y)
         }
         result = next_step[self.direction]
-        self.positions.insert(0, (result(first_pos, second_pos)))
+        self.positions.insert(0, (result))
         self.last = self.positions[-1]
         self.positions.pop()
 
@@ -188,8 +193,8 @@ def handle_keys(game_object):
         if event.type == pygame.QUIT:
             pygame.quit()
         elif event.type == pygame.KEYDOWN:
-            current_direction = game_object.direction
-            new_direction = KEY_MAPPING.get((current_direction, event.key), current_direction)
+            current = game_object.direction
+            new_direction = KEY_MAPPING.get((current, event.key), current)
             game_object.next_direction = new_direction
 
 
